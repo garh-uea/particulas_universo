@@ -111,8 +111,53 @@
     #start:hover { filter: brightness(1.12); }
 
     @media (max-width: 700px) {
-        #panel { width: calc(100vw - 32px); }
-        #webcam { width: 150px; }
+        /* En celular se ocultan el título, datos e instrucciones
+           para dejar libre la visualización de las partículas. */
+        #panel {
+            top: 10px;
+            left: 10px;
+            width: auto;
+            max-width: calc(100vw - 20px);
+            padding: 0;
+            border: 0;
+            background: transparent;
+            backdrop-filter: none;
+            box-shadow: none;
+        }
+
+        #panel h1,
+        #panel > div:not(#error),
+        #instructions {
+            display: none !important;
+        }
+
+        #start {
+            margin: 0;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.35);
+        }
+
+        #error {
+            max-width: calc(100vw - 20px);
+            margin-top: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: rgba(5,8,20,.82);
+        }
+
+        #webcam {
+            width: 110px;
+            right: 10px;
+            bottom: 10px;
+            border-radius: 10px;
+        }
+
+        /* Una vez activada la cámara, el panel desaparece por completo. */
+        #panel.mobile-hidden {
+            display: none !important;
+        }
     }
 </style>
 </head>
@@ -823,6 +868,12 @@ async function startCamera() {
         cameraStarted = true;
         startButton.style.display = "none";
         statusText.textContent = "Cámara activa. Muestra tu mano.";
+
+        // En pantallas pequeñas ocultamos todo el panel tras activar la cámara
+        // para que las partículas ocupen la pantalla sin obstrucciones.
+        if (window.matchMedia("(max-width: 700px)").matches) {
+            document.getElementById("panel").classList.add("mobile-hidden");
+        }
 
         const mpCamera = new Camera(video, {
             onFrame: async () => {
