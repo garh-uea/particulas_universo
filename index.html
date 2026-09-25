@@ -3,252 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Universo de Partículas - Control por Gestos</title>
+<title>🌻 Un regalo para Marleyth</title>
 
 <style>
-    * { box-sizing: border-box; }
-
-    body {
+    html, body {
         margin: 0;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
-        background: #02030a;
-        font-family: Arial, Helvetica, sans-serif;
-        color: white;
+        background: #020403;
+        font-family: Georgia, "Times New Roman", serif;
     }
 
-    #container {
+    #escena {
         position: relative;
         width: 100vw;
         height: 100vh;
     }
 
+    #mensaje {
+        position: absolute;
+        z-index: 5;
+        top: 7%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 850px;
+        text-align: center;
+        color: #fff7b0;
+        opacity: 0;
+        transition: opacity 2s ease;
+        pointer-events: none;
+        text-shadow: 0 0 15px #d99b18;
+    }
+
+    #mensaje h1 {
+        margin: 0;
+        font-size: clamp(2rem, 6vw, 4.5rem);
+        letter-spacing: 3px;
+    }
+
+    #mensaje p {
+        margin: 12px 0 0;
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
+        color: #ffe991;
+    }
+
+    #mensaje.visible {
+        opacity: 1;
+    }
+
+    #estado {
+        position: absolute;
+        z-index: 5;
+        bottom: 7%;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 239, 156, .75);
+        font-size: clamp(.75rem, 2vw, 1rem);
+        letter-spacing: 2px;
+        text-align: center;
+        transition: opacity 1.5s;
+    }
+
+    #reiniciar {
+        position: absolute;
+        z-index: 10;
+        right: 20px;
+        bottom: 20px;
+        border: 1px solid rgba(255, 218, 72, .5);
+        border-radius: 20px;
+        padding: 9px 15px;
+        color: #5b3800;
+        background: linear-gradient(#fff09a, #e9ad22);
+        cursor: pointer;
+        opacity: .75;
+    }
+
+    #reiniciar:hover {
+        opacity: 1;
+    }
+
     canvas {
         display: block;
-    }
-
-    #webcam {
-        position: absolute;
-        right: 18px;
-        bottom: 18px;
-        width: 230px;
-        max-width: 28vw;
-        border-radius: 14px;
-        transform: scaleX(-1);
-        border: 2px solid rgba(255,255,255,.35);
-        box-shadow: 0 0 25px rgba(0,200,255,.25);
-        z-index: 5;
-    }
-
-    #panel {
-        position: absolute;
-        top: 16px;
-        left: 16px;
-        width: min(390px, calc(100vw - 32px));
-        padding: 16px;
-        border: 1px solid rgba(255,255,255,.16);
-        border-radius: 18px;
-        background: rgba(5,8,20,.72);
-        backdrop-filter: blur(12px);
-        z-index: 6;
-        box-shadow: 0 12px 40px rgba(0,0,0,.35);
-    }
-
-    #panel h1 {
-        margin: 0 0 8px;
-        font-size: 21px;
-    }
-
-    #shape {
-        color: #62e9ff;
-        font-weight: bold;
-        font-size: 18px;
-    }
-
-    #gesture {
-        margin-top: 5px;
-        color: #ffe37b;
-        font-weight: bold;
-    }
-
-    #status {
-        margin-top: 8px;
-        color: #a9b2c7;
-        font-size: 13px;
-    }
-
-    #instructions {
-        margin-top: 12px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(255,255,255,.12);
-        font-size: 12px;
-        line-height: 1.55;
-        color: #d8deea;
-    }
-
-    .key {
-        color: white;
-        font-weight: bold;
-    }
-
-    #error {
-        color: #ff7f7f;
-        margin-top: 8px;
-        display: none;
-        font-size: 13px;
-    }
-
-    #start {
-        margin-top: 10px;
-        border: 0;
-        border-radius: 10px;
-        padding: 9px 13px;
-        cursor: pointer;
-        background: #1dd6ff;
-        color: #001018;
-        font-weight: bold;
-    }
-
-    #start:hover { filter: brightness(1.12); }
-
-    @media (max-width: 700px) {
-        /* En celular se ocultan el título, datos e instrucciones
-           para dejar libre la visualización de las partículas. */
-        #panel {
-            top: 10px;
-            left: 10px;
-            width: auto;
-            max-width: calc(100vw - 20px);
-            padding: 0;
-            border: 0;
-            background: transparent;
-            backdrop-filter: none;
-            box-shadow: none;
-        }
-
-        #panel h1,
-        #panel > div:not(#error),
-        #instructions {
-            display: none !important;
-        }
-
-        #start {
-            margin: 0;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            box-shadow: 0 4px 16px rgba(0,0,0,.35);
-        }
-
-        #error {
-            max-width: calc(100vw - 20px);
-            margin-top: 8px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            background: rgba(5,8,20,.82);
-        }
-
-        #webcam {
-            width: 110px;
-            right: 10px;
-            bottom: 10px;
-            border-radius: 10px;
-        }
-
-        /* Una vez activada la cámara, el panel desaparece por completo. */
-        #panel.mobile-hidden {
-            display: none !important;
-        }
     }
 </style>
 </head>
 
 <body>
-<div id="container">
 
-    <div id="panel">
-        <h1>🌌 Universo de Partículas</h1>
-        <div>Forma: <span id="shape">Esfera</span></div>
-        <div>Gesto: <span id="gesture">Esperando mano...</span></div>
-        <div id="status">Inicializando cámara y detección de mano...</div>
-
-        <div id="instructions">
-            <div><span class="key">🖐 Mano abierta</span> → Galaxia espiral</div>
-            <div><span class="key">✊ Puño</span> → Agujero negro</div>
-            <div><span class="key">☝ 1 dedo</span> → Rayo / relámpago</div>
-            <div><span class="key">✌ 2 dedos</span> → Doble hélice de ADN</div>
-            <div><span class="key">🤟 3 dedos</span> → Trifolio / trébol energético</div>
-            <div><span class="key">🖖 4 dedos</span> → Cubo holográfico</div>
-            <div><span class="key">👌 Pinch</span> → Átomo con electrones</div>
-            <div><span class="key">👍 Pulgar arriba</span> → Estrella</div>
-            <div><span class="key">☝ + movimiento lateral</span> → Cometa</div>
-            <div><span class="key">↔ Distancia entre pulgar e índice</span> → Tamaño y energía</div>
-            <div><span class="key">↕ Posición de la mano</span> → Inclinación y movimiento</div>
-        </div>
-
-        <button id="start">Activar cámara</button>
-        <div id="error"></div>
+<div id="escena">
+    <div id="mensaje">
+        <h1>🌻 Para Marleyth 🌻</h1>
+        <p>Un pequeño detalle para una persona muy especial</p>
     </div>
 
-    <video id="webcam" autoplay playsinline muted></video>
+    <div id="estado">Preparando un pequeño jardín de luz...</div>
+
+    <button id="reiniciar">🌱 Volver a florecer</button>
 </div>
-
-<!--
-    PROGRAMA DE CONTROL POR GESTOS
-
-    INSTRUCTIVO:
-    1. Mano abierta 🖐
-       Forma: GALAXIA ESPIRAL.
-       La posición de la mano controla la rotación.
-       Abrir/cerrar ligeramente los dedos modifica la energía.
-
-    2. Puño ✊
-       Forma: AGUJERO NEGRO.
-       Las partículas son atraídas hacia el centro.
-       El movimiento de la mano desplaza el agujero negro.
-
-    3. Un dedo ☝
-       Forma: RAYO.
-       El movimiento lateral rápido puede convertirse en COMETA.
-
-    4. Dos dedos ✌
-       Forma: DOBLE HÉLICE DE ADN.
-       La distancia de la mano al centro modifica su tamaño.
-
-    5. Tres dedos 🤟
-       Forma: TRÉBOL/TRIFOLIO ENERGÉTICO.
-       La inclinación de la mano gira la figura.
-
-    6. Cuatro dedos 🖖
-       Forma: CUBO HOLOGRÁFICO.
-       Mover la mano rota y desplaza el cubo.
-
-    7. Pinch 👌
-       Forma: ÁTOMO.
-       Acercar/separar pulgar e índice cambia el radio de las órbitas.
-       También produce una onda de energía.
-
-    8. Pulgar arriba 👍
-       Forma: ESTRELLA.
-       El tamaño de la estrella responde a la distancia de la mano.
-
-    9. Movimiento rápido con un dedo
-       Forma: COMETA.
-       La dirección del movimiento determina la dirección de la cola.
-
-    10. Distancia entre pulgar e índice
-        Controla escala, intensidad y expansión de las partículas.
-
-    11. Posición X/Y de la mano
-        Controla rotación, inclinación y desplazamiento del sistema.
-
-    IMPORTANTE:
-    - Se necesitan permisos para utilizar la cámara.
-    - Se recomienda Chrome o Edge.
-    - El archivo puede abrirse con Live Server o mediante un servidor local.
--->
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 
 <script type="importmap">
 {
@@ -259,661 +112,582 @@
 </script>
 
 <script type="module">
+
 import * as THREE from "three";
 
 /* =========================================================
    CONFIGURACIÓN
    ========================================================= */
-const PARTICLES = 10000;
-const TAU = Math.PI * 2;
 
-const video = document.getElementById("webcam");
-const shapeText = document.getElementById("shape");
-const gestureText = document.getElementById("gesture");
-const statusText = document.getElementById("status");
-const errorText = document.getElementById("error");
-const startButton = document.getElementById("start");
+const PARTICULAS = 10000;
 
-let currentShape = "Esfera";
-let currentGesture = "Esperando mano...";
-let handDetected = false;
+let escena;
+let camara;
+let renderizador;
+let sistemaParticulas;
 
-let handX = 0;
-let handY = 0;
-let targetScale = 1;
-let currentScale = 1;
-let targetRotationX = 0;
-let targetRotationY = 0;
+let posiciones;
+let colores;
+let destinos;
+let tipos;
+let tamanos;
 
-let pinchDistance = 0.08;
-let previousHandX = 0.5;
-let previousTime = performance.now();
-let handVelocityX = 0;
-let lastSwipeTime = 0;
+let tiempoInicio = 0;
+let ciclo = 0;
 
-let energy = 1;
-let targetEnergy = 1;
-
-let lastGesture = "";
-let gestureStableSince = 0;
 
 /* =========================================================
-   THREE.JS
+   ESCENA 3D
    ========================================================= */
-const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(
+escena = new THREE.Scene();
+
+camara = new THREE.PerspectiveCamera(
     60,
     window.innerWidth / window.innerHeight,
     0.1,
-    100
+    1000
 );
-camera.position.z = 7;
 
-const renderer = new THREE.WebGLRenderer({
+camara.position.set(0, 1.2, 11);
+
+renderizador = new THREE.WebGLRenderer({
     antialias: true,
     alpha: false
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-document.getElementById("container").appendChild(renderer.domElement);
 
-const geometry = new THREE.BufferGeometry();
-const positions = new Float32Array(PARTICLES * 3);
-const targets = new Float32Array(PARTICLES * 3);
-const colors = new Float32Array(PARTICLES * 3);
-const seeds = new Float32Array(PARTICLES);
+renderizador.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderizador.setSize(window.innerWidth, window.innerHeight);
 
-for (let i = 0; i < PARTICLES; i++) {
-    const i3 = i * 3;
-    positions[i3] = (Math.random() - 0.5) * 8;
-    positions[i3 + 1] = (Math.random() - 0.5) * 8;
-    positions[i3 + 2] = (Math.random() - 0.5) * 8;
+document.getElementById("escena").appendChild(renderizador.domElement);
 
-    colors[i3] = 0.2;
-    colors[i3 + 1] = 0.8;
-    colors[i3 + 2] = 1;
-
-    seeds[i] = Math.random();
-}
-
-geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-const material = new THREE.PointsMaterial({
-    size: 0.035,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.9,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-});
-
-const particles = new THREE.Points(geometry, material);
-scene.add(particles);
 
 /* =========================================================
-   CREACIÓN DE FORMAS
+   FONDO
    ========================================================= */
-function setShape(name) {
-    currentShape = name;
-    shapeText.textContent = name;
 
-    for (let i = 0; i < PARTICLES; i++) {
-        const i3 = i * 3;
-        let x = 0, y = 0, z = 0;
+const fondo = new THREE.Color(0x020604);
+escena.background = fondo;
 
-        if (name === "Esfera") {
-            const phi = Math.acos(1 - 2 * (i + 0.5) / PARTICLES);
-            const theta = Math.PI * (3 - Math.sqrt(5)) * i;
-            const r = 1.9 + (seeds[i] - 0.5) * 0.25;
-
-            x = r * Math.sin(phi) * Math.cos(theta);
-            y = r * Math.cos(phi);
-            z = r * Math.sin(phi) * Math.sin(theta);
-        }
-
-        else if (name === "Galaxia") {
-            const arm = i % 5;
-            const radius = Math.sqrt(seeds[i]) * 3.0;
-            const angle = radius * 2.6 + arm * TAU / 5 + seeds[i] * 0.8;
-
-            x = Math.cos(angle) * radius;
-            z = Math.sin(angle) * radius;
-            y = (seeds[i] - 0.5) * 0.45 * (1 - radius / 3.5);
-        }
-
-        else if (name === "Agujero negro") {
-            const r = Math.pow(seeds[i], 1.8) * 3.3 + 0.15;
-            const angle = seeds[i] * 40 + i * 0.015;
-
-            x = Math.cos(angle) * r;
-            z = Math.sin(angle) * r;
-            y = (seeds[i] - 0.5) * 0.45;
-
-            if (r < 0.7) {
-                x *= 0.25;
-                y *= 0.25;
-                z *= 0.25;
-            }
-        }
-
-        else if (name === "Rayo") {
-            const t = i / PARTICLES;
-            const segment = Math.floor(t * 12);
-            const local = (t * 12) % 1;
-            const startX = Math.sin(segment * 2.7) * 1.4;
-            const startY = -2.6 + segment * 0.43;
-            const endX = Math.sin((segment + 1) * 2.7) * 1.4;
-
-            x = THREE.MathUtils.lerp(startX, endX, local);
-            x += (seeds[i] - 0.5) * 0.22;
-            y = startY + local * 0.43;
-            z = (seeds[i] - 0.5) * 0.7;
-        }
-
-        else if (name === "ADN") {
-            const t = i / PARTICLES;
-            const angle = t * TAU * 7;
-            const y0 = (t - 0.5) * 5.5;
-            const radius = 1.0;
-
-            if (i % 2 === 0) {
-                x = Math.cos(angle) * radius;
-                z = Math.sin(angle) * radius;
-            } else {
-                x = Math.cos(angle + Math.PI) * radius;
-                z = Math.sin(angle + Math.PI) * radius;
-            }
-
-            y = y0;
-
-            if (i % 7 === 0) {
-                const bridge = seeds[i];
-                x = THREE.MathUtils.lerp(
-                    Math.cos(angle) * radius,
-                    Math.cos(angle + Math.PI) * radius,
-                    bridge
-                );
-                z = THREE.MathUtils.lerp(
-                    Math.sin(angle) * radius,
-                    Math.sin(angle + Math.PI) * radius,
-                    bridge
-                );
-            }
-        }
-
-        else if (name === "Trifolio") {
-            const t = i / PARTICLES * TAU * 8;
-            const r = 2.3 * Math.sin(3 * t);
-
-            x = r * Math.cos(t);
-            y = r * Math.sin(t);
-            z = (seeds[i] - 0.5) * 0.65;
-        }
-
-        else if (name === "Cubo") {
-            const face = i % 6;
-            const u = seeds[i] * 4 - 2;
-            const v = ((seeds[i] * 17) % 1) * 4 - 2;
-
-            if (face === 0) { x = 2; y = u; z = v; }
-            if (face === 1) { x = -2; y = u; z = v; }
-            if (face === 2) { x = u; y = 2; z = v; }
-            if (face === 3) { x = u; y = -2; z = v; }
-            if (face === 4) { x = u; y = v; z = 2; }
-            if (face === 5) { x = u; y = v; z = -2; }
-        }
-
-        else if (name === "Atomo") {
-            if (i < PARTICLES * 0.22) {
-                const phi = Math.acos(1 - 2 * (i + 0.5) / (PARTICLES * 0.22));
-                const theta = Math.PI * (3 - Math.sqrt(5)) * i;
-
-                x = Math.sin(phi) * Math.cos(theta) * 0.55;
-                y = Math.cos(phi) * 0.55;
-                z = Math.sin(phi) * Math.sin(theta) * 0.55;
-            } else {
-                const electronIndex = i % 4;
-                const angle = seeds[i] * TAU * 5;
-                const radius = 1.3 + electronIndex * 0.48;
-
-                x = Math.cos(angle) * radius;
-                y = Math.sin(angle * 1.7) * 0.25;
-                z = Math.sin(angle) * radius;
-
-                if (electronIndex % 2) {
-                    const temp = x;
-                    x = temp * 0.65 + y * 0.75;
-                    y = temp * 0.75 - y * 0.65;
-                }
-            }
-        }
-
-        else if (name === "Estrella") {
-            const angle = seeds[i] * TAU;
-            const spikes = 5;
-            const phase = angle * spikes;
-            const outer = 2.6;
-            const inner = 1.05;
-            const radius = (Math.cos(phase) > 0 ? outer : inner) * (0.75 + seeds[i] * 0.25);
-
-            x = Math.cos(angle) * radius;
-            y = Math.sin(angle) * radius;
-            z = (seeds[i] - 0.5) * 0.8;
-        }
-
-        else if (name === "Cometa") {
-            const t = seeds[i];
-            const head = t < 0.18;
-
-            if (head) {
-                const r = Math.cbrt(seeds[i] / 0.18) * 0.75;
-                const a = seeds[i] * TAU * 20;
-                x = 1.2 + Math.cos(a) * r;
-                y = Math.sin(a) * r;
-                z = Math.cos(a * 1.7) * r;
-            } else {
-                const q = (t - 0.18) / 0.82;
-                x = 1.0 - q * 4.7;
-                y = (seeds[i] - 0.5) * (0.25 + q * 1.1);
-                z = (seeds[i] - 0.5) * (0.25 + q * 1.1);
-            }
-        }
-
-        targets[i3] = x;
-        targets[i3 + 1] = y;
-        targets[i3 + 2] = z;
-    }
-}
-
-setShape("Esfera");
 
 /* =========================================================
-   COLORES
+   DATOS DE PARTÍCULAS
    ========================================================= */
-function updateColors(time) {
-    const hueBase = (time * 0.00003 + handX * 0.25 + energy * 0.04) % 1;
 
-    for (let i = 0; i < PARTICLES; i++) {
-        const i3 = i * 3;
-        const hue = (hueBase + seeds[i] * 0.18) % 1;
-        const rgb = hslToRgb(hue, 0.85, 0.58);
+posiciones = new Float32Array(PARTICULAS * 3);
+colores = new Float32Array(PARTICULAS * 3);
+destinos = new Float32Array(PARTICULAS * 3);
+tipos = new Float32Array(PARTICULAS);
+tamanos = new Float32Array(PARTICULAS);
 
-        colors[i3] += (rgb.r - colors[i3]) * 0.08;
-        colors[i3 + 1] += (rgb.g - colors[i3 + 1]) * 0.08;
-        colors[i3 + 2] += (rgb.b - colors[i3 + 2]) * 0.08;
-    }
 
-    geometry.attributes.color.needsUpdate = true;
+/* =========================================================
+   FUNCIONES AUXILIARES
+   ========================================================= */
+
+function ponerColor(i, r, g, b) {
+
+    colores[i * 3] = r;
+    colores[i * 3 + 1] = g;
+    colores[i * 3 + 2] = b;
 }
 
-function hslToRgb(h, s, l) {
-    let r, g, b;
 
-    if (s === 0) return { r: l, g: l, b: l };
+function agregarParticula(i, x, y, z, r, g, b, tipo, tamano) {
 
-    const hue2rgb = (p, q, t) => {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 1 / 2) return q;
-        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
+    destinos[i * 3] = x;
+    destinos[i * 3 + 1] = y;
+    destinos[i * 3 + 2] = z;
+
+    ponerColor(i, r, g, b);
+
+    tipos[i] = tipo;
+    tamanos[i] = tamano;
+
+    /* Las partículas empiezan lejos y desordenadas. */
+    const distancia = 7 + Math.random() * 9;
+    const angulo = Math.random() * Math.PI * 2;
+
+    posiciones[i * 3] =
+        Math.cos(angulo) * distancia;
+
+    posiciones[i * 3 + 1] =
+        -4 + Math.random() * 8;
+
+    posiciones[i * 3 + 2] =
+        Math.sin(angulo) * distancia;
+}
+
+
+/* =========================================================
+   CREAR UN GIRASOL CON PARTÍCULAS
+   ========================================================= */
+
+function crearGirasol(indice, cantidad, centroX, centroY, escala) {
+
+    let usados = 0;
+    const tallo = Math.floor(cantidad * 0.12);
+    const hojas = Math.floor(cantidad * 0.16);
+    const petalos = Math.floor(cantidad * 0.50);
+    const centro = cantidad - tallo - hojas - petalos;
+    const aureo = Math.PI * (3 - Math.sqrt(5));
+
+    /* Escala uniforme exclusiva de las flores: conserva su silueta
+       y las posiciones relativas del ramo en pantallas estrechas. */
+    const escalaPantalla = () => Math.min(
+        1, (2 * 9.9 * Math.tan(Math.PI / 6) *
+            window.innerWidth / Math.max(window.innerHeight, 1)) / 9.2
+    );
+    let ajuste = escalaPantalla();
+    const punto = (x, y, z, r, g, b, tipo, tamano) => {
+        agregarParticula(indice + usados++, x * ajuste,
+            1.2 + (y - 1.2) * ajuste, z,
+            r, g, b, tipo, tamano);
     };
+    const ejeTallo = t => centroX + Math.sin(t * Math.PI) * 0.09 * escala;
 
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
+    /* Tallo fino con volumen, unido al centro de la corola. */
+    for (let j = 0; j < tallo; j++) {
+        const t = j / Math.max(tallo - 1, 1);
+        const a = j * aureo;
+        const grosor = (0.027 + 0.012 * (1 - t)) * escala;
+        punto(ejeTallo(t) + Math.cos(a) * grosor,
+            -3.8 + t * (centroY + 3.8),
+            0.38 + Math.sin(a) * grosor,
+            0.12, 0.38 + 0.16 * t, 0.055, 1, 0.035);
+    }
 
-    r = hue2rgb(p, q, h + 1 / 3);
-    g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1 / 3);
+    /* Dos hojas lanceoladas: extremos cerrados y nervadura curva. */
+    for (let j = 0; j < hojas; j++) {
+        const lado = j % 2 === 0 ? -1 : 1;
+        const k = Math.floor(j / 2);
+        const n = Math.ceil((hojas - (j % 2)) / 2);
+        const t = (k + 0.5) / n;
+        const transversal = 2 * ((k * 0.61803398875) % 1) - 1;
+        const ancho = 0.25 * Math.pow(Math.sin(Math.PI * t), 0.9);
+        const base = lado < 0 ? 0.39 : 0.58;
+        const avance = 0.94 * t;
+        const subida = 0.46 * t + 0.10 * Math.sin(Math.PI * t);
+        const borde = ancho * transversal;
+        punto(ejeTallo(base) + lado * (avance - borde * 0.42) * escala,
+            -3.8 + base * (centroY + 3.8) + (subida + borde * 0.90) * escala,
+            0.40 + 0.10 * Math.sin(Math.PI * t) * (1 - transversal * transversal) * escala,
+            0.12 + 0.06 * (1 - Math.abs(transversal)),
+            0.43 + 0.18 * (1 - Math.abs(transversal)), 0.07, 2, 0.04);
+    }
 
-    return { r, g, b };
+    /* Dos coronas alternadas de pétalos con puntas suaves.
+       El muestreo regular evita grumos y huecos aleatorios. */
+    const numeroPetalos = 18;
+    for (let j = 0; j < petalos; j++) {
+        const p = j % (numeroPetalos * 2);
+        const capa = Math.floor(p / numeroPetalos);
+        const k = Math.floor(j / (numeroPetalos * 2));
+        const n = Math.floor((petalos - 1 - p) / (numeroPetalos * 2)) + 1;
+        const t = (k + 0.5) / n;
+        const a = (p % numeroPetalos + capa * 0.5) * Math.PI * 2 / numeroPetalos;
+        const transversal = 2 * ((k * 0.61803398875 + p * 0.38196601125) % 1) - 1;
+        const largo = capa === 0 ? 0.82 : 0.69;
+        const radio = 0.43 + largo * t;
+        const ancho = (capa === 0 ? 0.145 : 0.135) *
+            Math.pow(Math.sin(Math.PI * t), 0.85);
+        const lateral = ancho * transversal;
+        const relieve = Math.sin(Math.PI * t);
+        punto(centroX + (Math.cos(a) * radio - Math.sin(a) * lateral) * escala,
+            centroY + (Math.sin(a) * radio + Math.cos(a) * lateral) * escala,
+            0.51 + capa * 0.045 + (0.085 * relieve *
+                (1 - transversal * transversal) - 0.045 * t * t) * escala,
+            1.0, 0.49 + 0.35 * t + 0.06 * (1 - Math.abs(transversal)),
+            0.025 + 0.085 * t, 3, 0.045);
+    }
+
+    /* Centro de semillas en espiral, abombado y concéntrico a los pétalos. */
+    for (let j = 0; j < centro; j++) {
+        const t = Math.sqrt((j + 0.5) / centro);
+        const a = j * aureo;
+        const radio = 0.47 * t * escala;
+        const brillo = 0.5 + 0.5 * Math.sin(j * 2.399963);
+        punto(centroX + Math.cos(a) * radio,
+            centroY + Math.sin(a) * radio,
+            0.65 + 0.12 * (1 - t * t) * escala,
+            0.24 + 0.16 * t + 0.06 * brillo,
+            0.085 + 0.12 * t + 0.035 * brillo,
+            0.018 + 0.02 * t, 4, 0.045);
+    }
+
+    window.addEventListener("resize", () => {
+        const siguiente = escalaPantalla();
+        const proporcion = siguiente / ajuste;
+        for (let j = indice; j < indice + usados; j++) {
+            destinos[j * 3] *= proporcion;
+            destinos[j * 3 + 1] = 1.2 + (destinos[j * 3 + 1] - 1.2) * proporcion;
+            posiciones[j * 3] *= proporcion;
+            posiciones[j * 3 + 1] = 1.2 + (posiciones[j * 3 + 1] - 1.2) * proporcion;
+        }
+        ajuste = siguiente;
+    });
+
+    return usados;
 }
+
 
 /* =========================================================
-   GESTOS
+   CONSTRUIR EL RAMO
    ========================================================= */
-function distance(a, b) {
-    return Math.hypot(a.x - b.x, a.y - b.y);
-}
 
-function countExtendedFingers(lm) {
+function construirRamo() {
+
+    let indice = 0;
+
     /*
-      MediaPipe entrega:
-      4 = pulgar
-      8 = índice
-      12 = medio
-      16 = anular
-      20 = meñique
+       Las flores tienen diferentes tamaños y posiciones
+       para que parezca un ramo natural.
     */
 
-    const fingers = [];
-
-    // Pulgar: comparación aproximada con su articulación.
-    fingers.push(
-        distance(lm[4], lm[5]) > distance(lm[3], lm[5]) * 1.12
-    );
-
-    const pairs = [
-        [8, 6],
-        [12, 10],
-        [16, 14],
-        [20, 18]
+    const flores = [
+        { x: -3.0, y: 1.3, escala: 0.82 },
+        { x: -1.8, y: 2.0, escala: 1.00 },
+        { x: -0.65, y: 2.55, escala: 1.12 },
+        { x: 0.65, y: 2.55, escala: 1.12 },
+        { x: 1.85, y: 2.0, escala: 1.00 },
+        { x: 3.0, y: 1.25, escala: 0.82 },
+        { x: -1.05, y: 1.15, escala: 0.78 },
+        { x: 1.05, y: 1.15, escala: 0.78 }
     ];
 
-    for (const [tip, joint] of pairs) {
-        fingers.push(lm[tip].y < lm[joint].y - 0.015);
+    const cantidadPorFlor = 1050;
+
+    for (let i = 0; i < flores.length; i++) {
+
+        indice += crearGirasol(
+            indice,
+            cantidadPorFlor,
+            flores[i].x,
+            flores[i].y,
+            flores[i].escala
+        );
     }
 
-    return fingers;
-}
 
-function classifyGesture(lm) {
-    const fingers = countExtendedFingers(lm);
-    const count = fingers.filter(Boolean).length;
+    /*
+       Si quedan partículas libres,
+       se utilizan como pequeños destellos.
+    */
 
-    const pinch = distance(lm[4], lm[8]);
+    while (indice < PARTICULAS) {
 
-    const wrist = lm[0];
-    const middle = lm[9];
+        const angulo = Math.random() * Math.PI * 2;
+        const radio = 3 + Math.random() * 5;
 
-    const palmSize = distance(wrist, middle);
-    const pinchRatio = pinch / Math.max(palmSize, 0.001);
+        agregarParticula(
+            indice,
+            Math.cos(angulo) * radio,
+            -0.5 + Math.random() * 5,
+            Math.sin(angulo) * radio,
+            1,
+            0.72 + Math.random() * 0.28,
+            0.08,
+            5,
+            0.025
+        );
 
-    const thumbUp =
-        fingers[0] &&
-        !fingers[1] &&
-        !fingers[2] &&
-        !fingers[3] &&
-        !fingers[4] &&
-        lm[4].y < lm[3].y;
-
-    if (pinchRatio < 0.42) return "Pinch";
-    if (thumbUp) return "Pulgar arriba";
-    if (count === 0) return "Puño";
-    if (count === 1) return "1 dedo";
-    if (count === 2) return "2 dedos";
-    if (count === 3) return "3 dedos";
-    if (count === 4) return "4 dedos";
-    if (count === 5) return "Mano abierta";
-
-    return "Mano";
-}
-
-function changeShapeByGesture(gesture) {
-    const now = performance.now();
-
-    if (gesture !== lastGesture) {
-        lastGesture = gesture;
-        gestureStableSince = now;
-        return;
-    }
-
-    if (now - gestureStableSince < 220) return;
-
-    const map = {
-        "Puño": "Agujero negro",
-        "1 dedo": "Rayo",
-        "2 dedos": "ADN",
-        "3 dedos": "Trifolio",
-        "4 dedos": "Cubo",
-        "Mano abierta": "Galaxia",
-        "Pinch": "Atomo",
-        "Pulgar arriba": "Estrella"
-    };
-
-    if (map[gesture] && currentShape !== map[gesture]) {
-        setShape(map[gesture]);
+        indice++;
     }
 }
+
+construirRamo();
+
 
 /* =========================================================
-   MEDIAPIPE
+   GEOMETRÍA
    ========================================================= */
-const hands = new Hands({
-    locateFile: file =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+
+const geometria = new THREE.BufferGeometry();
+
+geometria.setAttribute(
+    "position",
+    new THREE.BufferAttribute(posiciones, 3)
+);
+
+geometria.setAttribute(
+    "color",
+    new THREE.BufferAttribute(colores, 3)
+);
+
+
+/* =========================================================
+   MATERIAL
+   ========================================================= */
+
+const material = new THREE.PointsMaterial({
+
+    size: 0.045,
+
+    vertexColors: true,
+
+    transparent: true,
+
+    opacity: 0.9,
+
+    depthWrite: false,
+
+    blending: THREE.AdditiveBlending
 });
 
-hands.setOptions({
-    maxNumHands: 1,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.62,
-    minTrackingConfidence: 0.62
-});
 
-hands.onResults(results => {
-    if (!results.multiHandLandmarks || !results.multiHandLandmarks.length) {
-        handDetected = false;
-        gestureText.textContent = "No se detecta la mano";
-        statusText.textContent = "Coloca una mano frente a la cámara.";
-        return;
-    }
+sistemaParticulas =
+    new THREE.Points(geometria, material);
 
-    handDetected = true;
+escena.add(sistemaParticulas);
 
-    const lm = results.multiHandLandmarks[0];
-    const gesture = classifyGesture(lm);
 
-    handX = 1 - lm[9].x;
-    handY = lm[9].y;
+/* =========================================================
+   PARTÍCULAS DE LUZ ALREDEDOR
+   ========================================================= */
 
-    const rawPinch = distance(lm[4], lm[8]);
-    pinchDistance += (rawPinch - pinchDistance) * 0.25;
+const luzGeometria =
+    new THREE.BufferGeometry();
 
-    targetScale = THREE.MathUtils.clamp(
-        0.75 + pinchDistance * 4.2,
-        0.72,
-        1.8
+const luzPosiciones =
+    new Float32Array(700 * 3);
+
+for (let i = 0; i < 700; i++) {
+
+    const radio =
+        4 + Math.random() * 6;
+
+    const angulo =
+        Math.random() * Math.PI * 2;
+
+    luzPosiciones[i * 3] =
+        Math.cos(angulo) * radio;
+
+    luzPosiciones[i * 3 + 1] =
+        -1 + Math.random() * 8;
+
+    luzPosiciones[i * 3 + 2] =
+        Math.sin(angulo) * radio;
+}
+
+luzGeometria.setAttribute(
+    "position",
+    new THREE.BufferAttribute(luzPosiciones, 3)
+);
+
+const luzMaterial =
+    new THREE.PointsMaterial({
+
+        color: 0xffe875,
+
+        size: 0.035,
+
+        transparent: true,
+
+        opacity: 0.6,
+
+        blending: THREE.AdditiveBlending
+    });
+
+const luces =
+    new THREE.Points(
+        luzGeometria,
+        luzMaterial
     );
 
-    targetEnergy = THREE.MathUtils.clamp(
-        0.6 + pinchDistance * 4.5,
-        0.7,
-        2.2
-    );
+escena.add(luces);
 
-    targetRotationY = (handX - 0.5) * 2.8;
-    targetRotationX = (handY - 0.5) * 2.2;
-
-    const now = performance.now();
-    const dt = Math.max((now - previousTime) / 1000, 0.016);
-    handVelocityX = (handX - previousHandX) / dt;
-
-    previousHandX = handX;
-    previousTime = now;
-
-    // Un dedo moviéndose rápidamente hacia un lado genera un cometa.
-    if (
-        gesture === "1 dedo" &&
-        Math.abs(handVelocityX) > 1.15 &&
-        now - lastSwipeTime > 900
-    ) {
-        setShape("Cometa");
-        lastSwipeTime = now;
-    }
-
-    changeShapeByGesture(gesture);
-
-    gestureText.textContent = gesture;
-    statusText.textContent =
-        `Mano detectada · Energía ${targetEnergy.toFixed(1)} · Escala ${targetScale.toFixed(1)}`;
-});
 
 /* =========================================================
    ANIMACIÓN
    ========================================================= */
-const clock = new THREE.Clock();
 
-function animate() {
-    requestAnimationFrame(animate);
+function animar() {
 
-    const time = performance.now();
-    const elapsed = clock.getElapsedTime();
+    requestAnimationFrame(animar);
 
-    currentScale += (targetScale - currentScale) * 0.08;
-    energy += (targetEnergy - energy) * 0.08;
+    const ahora =
+        performance.now();
 
-    particles.scale.setScalar(currentScale);
+    const tiempo =
+        ahora - tiempoInicio;
 
-    particles.rotation.y += 0.0018 * energy;
-    particles.rotation.y += (targetRotationY - particles.rotation.y) * 0.012;
-    particles.rotation.x += (targetRotationX - particles.rotation.x) * 0.012;
+    /*
+       La formación ocurre en etapas.
+    */
 
-    const pos = geometry.attributes.position.array;
+    const duracionEntrada = 7000;
 
-    for (let i = 0; i < PARTICLES; i++) {
+    for (let i = 0; i < PARTICULAS; i++) {
+
+        const retraso =
+            (i / PARTICULAS) * 4000;
+
+        const progreso =
+            THREE.MathUtils.clamp(
+                (tiempo - retraso) /
+                duracionEntrada,
+                0,
+                1
+            );
+
+        /*
+           Movimiento suave hacia la forma
+           final del girasol.
+        */
+
+        const suavizado =
+            progreso * progreso *
+            (3 - 2 * progreso);
+
         const i3 = i * 3;
 
-        let tx = targets[i3];
-        let ty = targets[i3 + 1];
-        let tz = targets[i3 + 2];
+        const ruido =
+            (1 - suavizado) *
+            (0.35 + Math.sin(i * 12.7 + tiempo * 0.004) * 0.12);
 
-        const s = seeds[i];
+        posiciones[i3] =
+            THREE.MathUtils.lerp(
+                posiciones[i3],
+                destinos[i3],
+                0.018 + suavizado * 0.035
+            ) + ruido * 0.08;
 
-        if (currentShape === "Agujero negro") {
-            const swirl = elapsed * (0.8 + s * 1.2);
-            const c = Math.cos(swirl);
-            const si = Math.sin(swirl);
+        posiciones[i3 + 1] =
+            THREE.MathUtils.lerp(
+                posiciones[i3 + 1],
+                destinos[i3 + 1],
+                0.018 + suavizado * 0.035
+            );
 
-            const ox = tx;
-            const oz = tz;
-
-            tx = ox * c - oz * si;
-            tz = ox * si + oz * c;
-
-            const pull = 0.86 + 0.16 * Math.sin(elapsed * 2 + s * 8);
-            tx *= pull;
-            ty *= pull;
-            tz *= pull;
-        }
-
-        else if (currentShape === "Galaxia") {
-            const wave = Math.sin(elapsed * 2.0 + s * 12) * 0.08;
-            ty += wave * (1 - Math.min(Math.abs(tx) / 4, 1));
-        }
-
-        else if (currentShape === "ADN") {
-            tx += Math.sin(elapsed * 1.7 + ty * 2) * 0.08;
-        }
-
-        else if (currentShape === "Atomo") {
-            const orbit = elapsed * (0.8 + s * 1.4);
-            const c = Math.cos(orbit);
-            const si = Math.sin(orbit);
-
-            const ox = tx;
-            const oz = tz;
-
-            tx = ox * c - oz * si;
-            tz = ox * si + oz * c;
-        }
-
-        else if (currentShape === "Estrella") {
-            const pulse = 1 + Math.sin(elapsed * 3 + s * 10) * 0.08 * energy;
-            tx *= pulse;
-            ty *= pulse;
-            tz *= pulse;
-        }
-
-        else if (currentShape === "Cometa") {
-            tx += elapsed * 0.12;
-        }
-
-        const smooth = currentShape === "Agujero negro" ? 0.16 : 0.075;
-
-        pos[i3] += (tx - pos[i3]) * smooth;
-        pos[i3 + 1] += (ty - pos[i3 + 1]) * smooth;
-        pos[i3 + 2] += (tz - pos[i3 + 2]) * smooth;
+        posiciones[i3 + 2] =
+            THREE.MathUtils.lerp(
+                posiciones[i3 + 2],
+                destinos[i3 + 2],
+                0.018 + suavizado * 0.035
+            );
     }
 
-    geometry.attributes.position.needsUpdate = true;
+    geometria.attributes.position.needsUpdate = true;
 
-    material.size = 0.025 + energy * 0.018;
 
-    updateColors(time);
+    /*
+       Movimiento delicado del ramo.
+    */
 
-    renderer.render(scene, camera);
-}
+    sistemaParticulas.rotation.y =
+        Math.sin(ahora * 0.00025) * 0.09;
 
-animate();
+    sistemaParticulas.rotation.x =
+        Math.sin(ahora * 0.00018) * 0.025;
 
-/* =========================================================
-   CÁMARA
-   ========================================================= */
-let cameraStarted = false;
+    luces.rotation.y =
+        ahora * 0.00008;
 
-async function startCamera() {
-    if (cameraStarted) return;
 
-    try {
-        statusText.textContent = "Solicitando permiso de cámara...";
-        errorText.style.display = "none";
+    /*
+       Cuando termina la formación,
+       aparece el mensaje.
+    */
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                facingMode: "user"
-            },
-            audio: false
-        });
+    if (tiempo > 8500) {
 
-        video.srcObject = stream;
-        await video.play();
+        document
+            .getElementById("mensaje")
+            .classList.add("visible");
 
-        cameraStarted = true;
-        startButton.style.display = "none";
-        statusText.textContent = "Cámara activa. Muestra tu mano.";
-
-        // En pantallas pequeñas ocultamos todo el panel tras activar la cámara
-        // para que las partículas ocupen la pantalla sin obstrucciones.
-        if (window.matchMedia("(max-width: 700px)").matches) {
-            document.getElementById("panel").classList.add("mobile-hidden");
-        }
-
-        const mpCamera = new Camera(video, {
-            onFrame: async () => {
-                await hands.send({ image: video });
-            },
-            width: 1280,
-            height: 720
-        });
-
-        mpCamera.start();
-
-    } catch (error) {
-        console.error(error);
-        errorText.style.display = "block";
-        errorText.textContent =
-            "No se pudo activar la cámara. Revisa el permiso del navegador y ejecuta el archivo mediante un servidor local.";
-        statusText.textContent = "Cámara no disponible.";
+        document
+            .getElementById("estado")
+            .style.opacity = "0";
     }
+
+    renderizador.render(
+        escena,
+        camara
+    );
 }
 
-startButton.addEventListener("click", startCamera);
-
-if (navigator.mediaDevices?.getUserMedia) {
-    statusText.textContent =
-        "Pulsa «Activar cámara» y permite el acceso a la cámara.";
-} else {
-    errorText.style.display = "block";
-    errorText.textContent =
-        "Este navegador no permite acceder a la cámara desde este contexto.";
-}
 
 /* =========================================================
-   VENTANA
+   REINICIAR
    ========================================================= */
-window.addEventListener("resize", () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+function reiniciar() {
+
+    tiempoInicio =
+        performance.now();
+
+    document
+        .getElementById("mensaje")
+        .classList.remove("visible");
+
+    document
+        .getElementById("estado")
+        .style.opacity = "1";
+
+    /*
+       Las partículas vuelven a comenzar
+       desde el exterior.
+    */
+
+    for (let i = 0; i < PARTICULAS; i++) {
+
+        const distancia =
+            7 + Math.random() * 9;
+
+        const angulo =
+            Math.random() * Math.PI * 2;
+
+        posiciones[i * 3] =
+            Math.cos(angulo) * distancia;
+
+        posiciones[i * 3 + 1] =
+            -4 + Math.random() * 8;
+
+        posiciones[i * 3 + 2] =
+            Math.sin(angulo) * distancia;
+    }
+
+    geometria.attributes.position.needsUpdate = true;
+}
+
+document
+    .getElementById("reiniciar")
+    .addEventListener(
+        "click",
+        reiniciar
+    );
+
+
+/* =========================================================
+   AJUSTE DE VENTANA
+   ========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        camara.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camara.updateProjectionMatrix();
+
+        renderizador.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);
+
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+
+reiniciar();
+animar();
+
 </script>
+
 </body>
 </html>
